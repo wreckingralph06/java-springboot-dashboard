@@ -1,11 +1,11 @@
 package com.example.application.views.list;
+import java.util.Collections;
+
 import com.example.application.data.entity.Contact;
 
 import com.example.application.views.MainLayout;
-import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -21,21 +21,37 @@ import com.vaadin.flow.component.grid.Grid;
 public class ListView extends VerticalLayout {
 	Grid<Contact> grid = new Grid<>(Contact.class);
 	TextField filterText = new TextField();
-
+	ContactForm form;
 
     public ListView() {
     	addClassName("list-view");
     	setSizeFull();
     	
     	configureGrid();
+    	configureForm();
     	
-    	add(getToolBar(), grid);
+    	add(getToolBar(), getContent());
     }
     
     private void configureGrid() {
     	grid.addClassName("contact-grid");
     	grid.setSizeFull();
     	grid.setColumns("firstName", "lastName", "email");
+    }
+    
+    private void configureForm() {
+    	form = new ContactForm(Collections.emptyList(), Collections.emptyList());
+    	form.setWidth("25em");
+    }
+    
+    private Component getContent() {
+    	HorizontalLayout content = new HorizontalLayout(grid, form);
+    	content.setFlexGrow(2, grid);
+    	content.setFlexGrow(1, form);
+    	content.addClassName("content");
+    	content.setSizeFull();
+    	
+    	return content;
     }
     
     private Component getToolBar() {
