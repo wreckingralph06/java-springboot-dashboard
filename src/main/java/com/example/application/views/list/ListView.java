@@ -1,8 +1,9 @@
 package com.example.application.views.list;
 import java.util.Collections;
 
-import com.example.application.data.entity.Contact;
 
+import com.example.application.data.entity.Contact;
+import com.example.application.data.service.CrmService;
 import com.example.application.views.MainLayout;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -22,8 +23,10 @@ public class ListView extends VerticalLayout {
 	Grid<Contact> grid = new Grid<>(Contact.class);
 	TextField filterText = new TextField();
 	ContactForm form;
+	private CrmService service;
 
-    public ListView() {
+    public ListView(CrmService service) {
+    	this.service = service;  
     	addClassName("list-view");
     	setSizeFull();
     	
@@ -31,16 +34,25 @@ public class ListView extends VerticalLayout {
     	configureForm();
     	
     	add(getToolBar(), getContent());
+    	
+    	updateList();
+    }
+    
+    private void updateList() {
+    	grid.setItems(service.findAllContacts(filterText.getValue()));
     }
     
     private void configureGrid() {
     	grid.addClassName("contact-grid");
     	grid.setSizeFull();
     	grid.setColumns("firstName", "lastName", "email");
+    	grid.addColumn(contact -> contact.getStatus().getName()).setHeader("Status");
+        grid.addColumn(contact -> contact.getCompany().getName()).setHeader("Company");
+		grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
     
     private void configureForm() {
-    	form = new ContactForm(Collections.emptyList(), Collections.emptyList());
+    	form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
     	form.setWidth("25em");
     }
     
@@ -58,6 +70,7 @@ public class ListView extends VerticalLayout {
     	filterText.setPlaceholder("Filter by name...");
     	filterText.setClearButtonVisible(true);
     	filterText.setValueChangeMode(ValueChangeMode.LAZY);
+    	filterText.addValueChangeListener(e -> updateList());
     	
     	Button addContactButton = new Button("Add Contact");
     	HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
