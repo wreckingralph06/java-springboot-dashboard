@@ -63,6 +63,27 @@ public class ListView extends VerticalLayout {
     private void configureForm() {
     	form = new ContactForm(service.findAllCompanies(), service.findAllStatuses());
     	form.setWidth("25em");
+    	
+    	form.addListener(ContactForm.SaveEvent.class, this::saveContact);
+    	form.addListener(ContactForm.DeleteEvent.class, this::deleteContact); 
+    	form.addListener(ContactForm.CloseEvent.class, e -> closeEditor());
+    }
+    
+    private void saveContact(ContactForm.SaveEvent event) {
+    	service.saveContact(event.getContact());
+    	updateList();
+    	closeEditor();
+    }
+    
+    private void addContact() {
+    	grid.asSingleSelect().clear();
+    	editContact(new Contact());
+    }
+    
+    private void deleteContact(ContactForm.DeleteEvent event) {
+    	service.deleteContact(event.getContact());
+    	updateList();
+    	closeEditor();
     }
     
     private void editContact(Contact contact) {
@@ -92,6 +113,9 @@ public class ListView extends VerticalLayout {
     	filterText.addValueChangeListener(e -> updateList());
     	
     	Button addContactButton = new Button("Add Contact");
+    	addContactButton.addClickListener(e -> addContact());
+    	
+    	
     	HorizontalLayout toolbar = new HorizontalLayout(filterText, addContactButton);
     	toolbar.addClassName("toolbar");
     	return toolbar;
