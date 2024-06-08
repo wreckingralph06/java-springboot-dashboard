@@ -3,10 +3,13 @@ package com.example.application.views;
 import com.example.application.views.about.AboutView;
 
 
+
 import com.example.application.views.list.ListView;
+import com.example.application.security.SecurityService;
 import com.example.application.views.DashboardView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Header;
@@ -27,10 +30,11 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
-
     private H1 viewTitle;
+    private SecurityService securityService;
 
-    public MainLayout() {
+    public MainLayout(SecurityService securityService) {
+    	this.securityService = securityService;
     	createHeader();
     	createDrawer();
     }
@@ -39,7 +43,9 @@ public class MainLayout extends AppLayout {
     	H1 logo = new H1("Vaadin CRM");
     	logo.addClassNames("text-l", "m-m");
     	
-    	HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
+    	Button logOut = new Button("Log out", e -> securityService.logout());
+    	HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, logOut);
+    	
     	header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
     	header.expand(logo);
     	header.setWidthFull();
