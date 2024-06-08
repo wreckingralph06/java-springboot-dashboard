@@ -4,6 +4,7 @@ import com.example.application.views.about.AboutView;
 
 
 import com.example.application.views.list.ListView;
+import com.example.application.views.DashboardView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.Footer;
@@ -49,7 +50,12 @@ public class MainLayout extends AppLayout {
     
     private void createDrawer() {
     	RouterLink listView = new RouterLink("List", ListView.class);
+    	RouterLink dashboardView = new RouterLink("Dashboard", DashboardView.class);
+        
     	listView.setHighlightCondition(HighlightConditions.sameLocation());
-    	addToDrawer(new VerticalLayout(listView));
+    	addToDrawer(
+            new VerticalLayout(listView),
+            new VerticalLayout(dashboardView)
+        );
     }
 }
