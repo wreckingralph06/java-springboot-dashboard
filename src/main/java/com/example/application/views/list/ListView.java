@@ -1,7 +1,7 @@
 package com.example.application.views.list;
 import java.util.Collections;
 
-
+import org.springframework.context.annotation.Scope;
 
 import com.example.application.data.entity.Contact;
 import com.example.application.data.service.CrmService;
@@ -20,6 +20,8 @@ import jakarta.annotation.security.PermitAll;
 
 import com.vaadin.flow.component.grid.Grid;
 
+@org.springframework.stereotype.Component
+@Scope("prototype")
 @PageTitle("Contacts | Vaadin CRM")
 @Route(value = "", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
